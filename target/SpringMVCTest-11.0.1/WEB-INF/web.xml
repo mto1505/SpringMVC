@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="4.0" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
+    <servlet-mapping>
+        <servlet-name>action</servlet-name>
+        <url-pattern>*.do</url-pattern>
+    </servlet-mapping>
+    <session-config>
+    <!--    <session-timeout>
+            30 
+        </session-timeout>
+ -->
+           <!-- <cookie-config>
+                <http-only>true</http-only>
+            <secure>true</secure>    
+            </cookie-config>
+                -->                
+        <tracking-mode>COOKIE</tracking-mode>
+    </session-config>
+    
+    <display-name>spring-mvc</display-name>
+    
+    	<!--
+	  - Loads the root application context of this web app at startup.
+	  - The application context is then available via
+	  - WebApplicationContextUtils.getWebApplicationContext(servletContext).
+	-->
+        
+     <!--Thêm a ContextLoaderListenertải bảo mật-config-xml -->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <listener>
+    <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
+  </listener>
+    
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            /WEB-INF/context/applicationContext.xml
+            /WEB-INF/context/security.xml
+        </param-value>
+    </context-param>
+    
+    <!--Đăng ký springSecurityFilterChain Bộ lọc cho mọi URL trong ứng dụng của bạn-->
+    <!-- Spring security Filter Chain-->
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+	<dispatcher>ERROR</dispatcher>
+    </filter-mapping>
+    <filter>
+        
+        <filter-name>sitemesh</filter-name>
+        <filter-class>com.opensymphony.module.sitemesh.filter.PageFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>sitemesh</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+   
+    
+    <!--   ánh xạ các yêu cầu mà bạn muốn DispatcherServlet xử lý-->
+    <servlet>
+        <servlet-name>dispatcher</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>/WEB-INF/context/dispatcher-servlet.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>dispatcher</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>action</servlet-name>
+        <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
+        <init-param>
+            <param-name>config</param-name>
+            <param-value>/WEB-INF/struts-config.xml</param-value>
+        </init-param>
+        <init-param>
+            <param-name>debug</param-name>
+            <param-value>2</param-value>
+        </init-param>
+        <init-param>
+            <param-name>detail</param-name>
+            <param-value>2</param-value>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+   
+    <!-- After initialization of spring-mvc DispatcherServlet, 
+    the framework will try to load the application context from a file named [servlet-name]-servlet.xml located in the application's WebContent/WEB-INF directory.-->
+    <!-- DispatcherServlet definition goes here 
+    (If you do not want to go with default filename as [servlet-name]-servlet.xml and default location as WebContent/WEB-INF)-->
+    
+
+    <!--Session config-->
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+</web-app>
